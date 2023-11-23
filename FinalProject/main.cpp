@@ -25,6 +25,11 @@ int main()
             {
                 window.close();
             }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                auto mousePosition = sf::Mouse::getPosition(window);
+                int x = (mousePosition.x) / 32;
+                int y = (mousePosition.y) / 32;
+            }
         }
     }
 }
