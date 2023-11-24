@@ -8,7 +8,7 @@
 #include "constants.h"
 using namespace std; 
 
-void PullData() {
+vector<Flights> PullData() {
     vector<Flights> flights;
     ifstream input("flightdata.csv");
     if (!input.is_open())
@@ -49,6 +49,7 @@ void PullData() {
             flights.push_back(newFlight);
         }
     }
+    return flights; 
 }
 
 sf::RenderWindow* BuildWindow() {
