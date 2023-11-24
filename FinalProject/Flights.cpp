@@ -6,11 +6,11 @@ Flights::Flights(float _seats, float _passengers, string _name, float _distance)
 {
     seats = _seats;
     passengers = _passengers;
-    efficiency = _seats / _passengers;
+    efficiency = _passengers / _seats;
     name = _name;
     distance = _distance;
 
-    if (_passengers == 0)
+    if (_seats == 0)
     {
         efficiency = 0;
     }
