@@ -1,6 +1,7 @@
 
 #include "Flights.h"
 
+Flights::Flights() {}
 
 Flights::Flights(float _seats, float _passengers, string _name, float _distance)
 {
