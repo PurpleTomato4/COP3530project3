@@ -16,3 +16,14 @@ Flights::Flights(float _seats, float _passengers, string _name, float _distance)
         efficiency = 0;
     }
 }
+
+void Flights::Increment(float _seats, float _passengers, float _distance)
+{
+    seats += _seats;
+    passengers += _passengers;
+    distance += _distance;
+    efficiency = passengers / seats;
+    if (_seats == 0) {
+        efficiency = 0;
+    }
+}

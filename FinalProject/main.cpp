@@ -12,81 +12,81 @@ using namespace std;
 using namespace std::chrono; 
 
 //O(1) time worst case
-bool compare (const Flights& f1, const Flights& f2, string dataType, bool ascending)
+bool compare (Flights*& f1, Flights*& f2, string dataType, bool ascending)
 {
     if (dataType == "efficiency")
     {
         if(ascending) {
-            return f1.efficiency > f2.efficiency;
+            return f1->efficiency > f2->efficiency;
         } else {
-            return f1.efficiency < f2.efficiency;
+            return f1->efficiency < f2->efficiency;
         }
 
     } else if (dataType == "seats") {
 
         if(ascending) {
-            return f1.seats > f2.seats;
+            return f1->seats > f2->seats;
         } else {
-            return f1.seats < f2.seats;
+            return f1->seats < f2->seats;
         }
 
     } else if (dataType == "passengers") {
 
         if(ascending) {
-            return f1.passengers > f2.passengers;
+            return f1->passengers > f2->passengers;
         } else {
-            return f1.passengers < f2.passengers;
+            return f1->passengers < f2->passengers;
         }
 
     } else if (dataType == "distance") {
 
         if(ascending) {
-            return f1.distance > f2.distance;
+            return f1->distance > f2->distance;
         } else {
-            return f1.distance < f2.distance;
+            return f1->distance < f2->distance;
         }
     }
 }
 
 //O(1) time worst case
-bool mergeCompare (const Flights& f1, const Flights& f2, string dataType, bool ascending)
+bool mergeCompare (Flights*& f1, Flights*& f2, string dataType, bool ascending)
 {
     if (dataType == "efficiency")
     {
         if(ascending) {
-            return f1.efficiency <= f2.efficiency;
+            return f1->efficiency <= f2->efficiency;
         } else {
-            return f1.efficiency >= f2.efficiency;
+            return f1->efficiency >= f2->efficiency;
         }
 
     } else if (dataType == "seats") {
 
         if(ascending) {
-            return f1.seats <= f2.seats;
+            return f1->seats <= f2->seats;
         } else {
-            return f1.seats >= f2.seats;
+            return f1->seats >= f2->seats;
         }
 
     } else if (dataType == "passengers") {
 
         if(ascending) {
-            return f1.passengers <= f2.passengers;
+            return f1->passengers <= f2->passengers;
         } else {
-            return f1.passengers >= f2.passengers;
+            return f1->passengers >= f2->passengers;
         }
 
     } else if (dataType == "distance") {
 
         if(ascending) {
-            return f1.distance <= f2.distance;
+            return f1->distance <= f2->distance;
         } else {
-            return f1.distance >= f2.distance;
+            return f1->distance >= f2->distance;
         }
     }
 }
 
 //shellsort function... average time complexity is O(n^5/4)
-void shellSort(vector<Flights>& flights, int gap, string dataType,bool ascending)
+void shellSort(vector<Flights*>& flights, int gap, string dataType, bool ascending)
 {
     int n = flights.size();
 
@@ -94,10 +94,10 @@ void shellSort(vector<Flights>& flights, int gap, string dataType,bool ascending
     {
         for (int i = gap; i < n; i++)
         {
-            Flights temp = flights[i];
+            Flights* temp = flights[i];
             int j = i;
 
-            while (j >= gap && compare(flights[j-gap],temp,dataType,ascending))
+            while (j >= gap && compare(flights[j-gap], temp, dataType, ascending))
             {
                 flights[j] = flights[j-gap];
                 j -= gap;
@@ -108,16 +108,15 @@ void shellSort(vector<Flights>& flights, int gap, string dataType,bool ascending
     }
 }
 
-
 //merge function for mergesort... time complexity is O(n)
-void merge(vector<Flights>& flights, int left, int middle, int right, string dataType, bool ascending)
+void merge(vector<Flights*>& flights, int left, int middle, int right, string dataType, bool ascending)
 {
     int leftSize = middle - left + 1;
     int rightSize = right - middle;
 
 
-    vector<Flights> leftArr(leftSize);
-    vector<Flights> rightArr(rightSize);
+    vector<Flights*> leftArr(leftSize);
+    vector<Flights*> rightArr(rightSize);
 
 
     //fill the right and left vectors with the corresponding data
@@ -164,7 +163,7 @@ void merge(vector<Flights>& flights, int left, int middle, int right, string dat
 }
 
 //mergesort function... average time complexity is O(nlog(n))
-void mergeSort(vector<Flights>& flights, int left, int right, string dataType, bool ascending)
+void mergeSort(vector<Flights*>& flights, int left, int right, string dataType, bool ascending)
 {
     if (left < right)
     {
@@ -263,7 +262,7 @@ int main()
 
         if (input == 1) {
             auto start = high_resolution_clock::now(); 
-            mergeSort(data, 0, data.size() - 1, "efficiency");
+            mergeSort(data, 0, data.size() - 1, "efficiency", false);
             auto stop = high_resolution_clock::now(); 
             auto duration = duration_cast<microseconds>(stop - start); 
 
@@ -287,7 +286,7 @@ int main()
         }
         if (input == 2) {
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "seats");
+            mergeSort(data, 0, data.size() - 1, "seats", true);
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 
@@ -310,7 +309,7 @@ int main()
         }
         if (input == 3) {
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "passengers");
+            mergeSort(data, 0, data.size() - 1, "passengers", true);
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 
@@ -333,7 +332,7 @@ int main()
         }
         if (input == 4) {
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "distance");
+            mergeSort(data, 0, data.size() - 1, "distance", true);
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 

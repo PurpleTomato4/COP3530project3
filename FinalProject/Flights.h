@@ -15,9 +15,8 @@ public:
     float efficiency = 0;
 
     Flights();
-
     Flights(float seats, float passengers, string _name, float _distance);
-
+    void Increment(float _seats, float _passengers, float _distance);
 };
 
 
