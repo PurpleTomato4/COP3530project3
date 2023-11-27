@@ -79,15 +79,15 @@ void mergeSort(vector<Flights>& flights, int left, int right)
     }
 }
 
-vector<Flights*> PullData() {
-    vector<Flights*> flights;
-    flights.reserve(120000); 
+void PullData(vector<Flights*>& flights) {
+    //vector<Flights*> flights;
+    //flights.reserve(120000); 
 
     ifstream input("flightdata.csv");
     if (!input.is_open())
     {
         cout << "Error: File not detected." << endl;
-        return flights; 
+        return; 
     }
     string line;
     getline(input, line);
@@ -119,9 +119,10 @@ vector<Flights*> PullData() {
         }
         getline(stream, name, ',');
         Flights* newFlight = new Flights(stof(seats), stof(passengers), name, stof(distance));
+        //cout << flightsToString(*newFlight) << endl; 
         flights.push_back(newFlight);
     }
-    return flights; 
+    cout << "Data pull done" << endl; 
 }
 
 string flightsToString(const Flights& flight) {
@@ -136,14 +137,18 @@ string flightsToString(const Flights& flight) {
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Sorter 1000");
 
-    vector<Flights*> data = PullData(); 
+    //sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Sorter 1000");
+
+    vector<Flights*> data;
+    PullData(data);
     /*vector<Flights*> data; 
     Flights* flight = new Flights();
     data.push_back(flight); */
 
     int scrollOffset = 0; 
+
+    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Sorter 1000");
 
     sf::Sprite flightSortSprite;
     sf::Sprite rawDataSprite;
