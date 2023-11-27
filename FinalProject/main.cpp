@@ -66,18 +66,28 @@ int main()
 
     sf::Sprite flightSortSprite;
     sf::Sprite rawDataSprite;
+    sf::Sprite testSprite1; 
+    sf::Sprite testSprite2; 
 
     flightSortSprite.setTexture(TextureManager::GetTexture("AirlineSort"));
-    flightSortSprite.setPosition((WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2);
+    flightSortSprite.setPosition(LEFT_MENU_X, LEFT_MENU_Y);
     rawDataSprite.setTexture(TextureManager::GetTexture("SourceData"));
-    rawDataSprite.setPosition(WINDOW_WIDTH / 2 + 100, WINDOW_HEIGHT / 2);
+    rawDataSprite.setPosition(RIGHT_MENU_X, RIGHT_MENU_Y);
+    testSprite1.setTexture(TextureManager::GetTexture("testImage1"));
+    testSprite1.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+    testSprite2.setTexture(TextureManager::GetTexture("testImage2"));
+    testSprite2.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+
+    bool displayTest1 = false; 
+    bool displayTest2 = false; 
 
     while (window.isOpen()) {
 
+        //window.clear(); 
         sf::Event event;
         while (window.pollEvent(event))
         {
-            window.clear(); // Clear the window
+            //window.clear(); // Clear the window
 
             // Draw sprites
             window.draw(flightSortSprite);
@@ -92,10 +102,38 @@ int main()
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 auto mousePosition = sf::Mouse::getPosition(window);
-                //int x = (mousePosition.x) / 32;
-                //int y = (mousePosition.y) / 32;
+                int x = mousePosition.x;
+                int y = mousePosition.y;
+
+                if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT) {
+                    if (event.mouseButton.button == sf::Mouse::Left) {
+                        // determine what sprite is being clicked
+                        if (flightSortSprite.getGlobalBounds().contains(x, y)) {
+                            displayTest1 = true; 
+                            cout << "Flight sort sprite" << endl; 
+                        }
+                        if (rawDataSprite.getGlobalBounds().contains(x, y)) {
+                            displayTest2 = true; 
+                            cout << "Raw data sprite" << endl; 
+                        }
+                    }
+                }
             }
+            /*window.clear(); 
+            if (!displayTest1 && !displayTest2) {
+                window.draw(flightSortSprite);
+                window.draw(rawDataSprite);
+            }
+            else if (displayTest1 && !displayTest2) {
+                window.draw(testSprite1);
+            }
+            else if (!displayTest1 && displayTest2) {
+                window.draw(testSprite2); 
+            }*/
         }
+        window.display(); 
     }
+    delete windowPtr; 
+    return 0; 
 }
 
