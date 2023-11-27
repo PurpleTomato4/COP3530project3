@@ -7,7 +7,77 @@
 #include "Flights.h"
 #include "TextureManager.h"
 #include "constants.h"
-using namespace std; 
+using namespace std;
+
+//merge function for mergesort... time complexity is O(n)
+void merge(vector<Flights>& flights, int left, int middle, int right)
+{
+    int leftSize = middle - left + 1;
+    int rightSize = right - middle;
+
+
+    vector<Flights> leftArr(leftSize);
+    vector<Flights> rightArr(rightSize);
+
+
+    //fill the right and left vectors with the corresponding data
+    for (int i = 0; i < leftSize; i++)
+        leftArr[i] = flights[left + i];
+    for (int j = 0; j < rightSize; j++)
+        rightArr[j] = flights[middle + 1 + j];
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    //compare data from left and right sub arrays and merge in the new sorted order
+    while (i < leftSize && j < rightSize)
+    {
+        if (leftArr[i].efficiency >= rightArr[j].efficiency)
+        {
+            flights[k] = leftArr[i];
+            i++;
+        }
+        else
+        {
+            flights[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+
+    //copy remaining elements from left array
+    while (i < leftSize)
+    {
+        flights[k] = leftArr[i];
+        i++;
+        k++;
+    }
+
+    //copy remaining elements from right array
+    while (j < rightSize)
+    {
+        flights[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+
+//mergesort function... time complexity is O(nlog(n))
+void mergeSort(vector<Flights>& flights, int left, int right)
+{
+    if (left < right)
+    {
+        int middle = (left + right) / 2;
+
+        //recursively split the vector in half until base case
+        mergeSort(flights, left, middle);
+        mergeSort(flights, middle + 1, right);
+
+        //merge the split vectors together
+        merge(flights, left, middle, right);
+    }
+}
 
 vector<Flights> PullData() {
     vector<Flights> flights;

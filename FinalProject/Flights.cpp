@@ -1,6 +1,7 @@
 
 #include "Flights.h"
 
+Flights::Flights() {}
 
 Flights::Flights(float _seats, float _passengers, string _name, float _distance)
 {
@@ -9,4 +10,9 @@ Flights::Flights(float _seats, float _passengers, string _name, float _distance)
     efficiency = _passengers / _seats;
     name = _name;
     distance = _distance;
+
+    if (_seats == 0)
+    {
+        efficiency = 0;
+    }
 }

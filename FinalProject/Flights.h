@@ -14,6 +14,8 @@ public:
     float distance = 0;
     float efficiency = 0;
 
+    Flights();
+
     Flights(float seats, float passengers, string _name, float _distance);
 
 };
