@@ -4,9 +4,11 @@
 #include <sstream>
 #include <vector>
 #include <iomanip>
+#include <chrono> 
 #include "Flights.h"
 #include "constants.h"
 using namespace std;
+using namespace std::chrono; 
 
 //merge function for mergesort... time complexity is O(n)
 void merge(vector<Flights*>& flights, int left, int middle, int right, string parameter)
@@ -163,26 +165,40 @@ void PullData(vector<Flights*>& flights) {
 
 int main()
 {
+    cout << "Loading flight database..." << endl << endl; 
 
     vector<Flights*> data;
     PullData(data);
 
-    bool menu = true; 
+    cout << "Welcome to the Airline Sorter 1000. What would you like to do?" << endl << endl;
+
+    bool menu = true;
+    int counter = 0;
 
     while (menu) {
-        cout << "Welcome to the Airline Sorter 1000. What would you like to do?" << endl << endl; 
+        if (counter > 0) {
+            cout << "Would you like to do anything else?" << endl << endl; 
+        }
         cout << "1. Sort by efficiency." << endl; 
         cout << "2. Sort by seats." << endl; 
         cout << "3. Sort by passengers." << endl; 
         cout << "4. Sort by distance." << endl; 
-        cout << "0. Exit" << endl; 
+        cout << "0. Exit" << endl << endl; 
+        counter += 1; 
+
         int input; 
-        cin >> input; 
+        cin >> input;
+        cout << endl; 
 
         if (input == 1) {
+            auto start = high_resolution_clock::now(); 
             mergeSort(data, 0, data.size() - 1, "efficiency");
+            auto stop = high_resolution_clock::now(); 
+            auto duration = duration_cast<microseconds>(stop - start); 
+
             int field_one_width = 0;
             int field_two_width = 0;
+
             for (int i = 0; i < 20; i++) {
                 if (data[i]->name.length() > field_one_width) {
                     field_one_width = data[i]->name.length();
@@ -196,9 +212,14 @@ int main()
                     setw(field_one_width) << left << data[i]->name <<
                     "|" << " Efficiency: " << setw(6) << data[i]->efficiency << endl;
             }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
         }
         if (input == 2) {
+            auto start = high_resolution_clock::now();
             mergeSort(data, 0, data.size() - 1, "seats");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
             int field_one_width = 0;
             int field_two_width = 0;
             for (int i = 0; i < 20; i++) {
@@ -214,9 +235,14 @@ int main()
                     setw(field_one_width) << left << data[i]->name <<
                     "|" << " Seats: " << setw(5) << data[i]->seats << endl;
             }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
         }
         if (input == 3) {
+            auto start = high_resolution_clock::now();
             mergeSort(data, 0, data.size() - 1, "passengers");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
             int field_one_width = 0; 
             int field_two_width = 0; 
             for (int i = 0; i < 20; i++) {
@@ -232,9 +258,14 @@ int main()
                     setw(field_one_width) << left << data[i]->name << 
                     "|" << " Passengers: " << setw(5) << data[i]->passengers << endl;
             }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
         }
         if (input == 4) {
+            auto start = high_resolution_clock::now();
             mergeSort(data, 0, data.size() - 1, "distance");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
             int field_one_width = 0;
             int field_two_width = 0;
             for (int i = 0; i < 20; i++) {
@@ -250,13 +281,16 @@ int main()
                     setw(field_one_width) << left << data[i]->name <<
                     "|" << " Distance: " << setw(5) << data[i]->distance << endl;
             }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
         }
         cout << endl; 
         if (input == 0) {
             cout << "Airline Sorter 1000 logging off. Goodbye." << endl; 
             menu = false; 
         }
-
+        if (input < 0 || input > 4) {
+            cout << "Invalid input. Please try again." << endl; 
+        }
     }
     
 
