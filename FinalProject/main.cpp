@@ -10,15 +10,113 @@
 using namespace std;
 using namespace std::chrono; 
 
+//O(1) time worst case
+bool compare (const Flights& f1, const Flights& f2, string dataType, bool ascending)
+{
+    if (dataType == "efficiency")
+    {
+        if(ascending) {
+            return f1.efficiency > f2.efficiency;
+        } else {
+            return f1.efficiency < f2.efficiency;
+        }
+
+    } else if (dataType == "seats") {
+
+        if(ascending) {
+            return f1.seats > f2.seats;
+        } else {
+            return f1.seats < f2.seats;
+        }
+
+    } else if (dataType == "passengers") {
+
+        if(ascending) {
+            return f1.passengers > f2.passengers;
+        } else {
+            return f1.passengers < f2.passengers;
+        }
+
+    } else if (dataType == "distance") {
+
+        if(ascending) {
+            return f1.distance > f2.distance;
+        } else {
+            return f1.distance < f2.distance;
+        }
+    }
+}
+
+//O(1) time worst case
+bool mergeCompare (const Flights& f1, const Flights& f2, string dataType, bool ascending)
+{
+    if (dataType == "efficiency")
+    {
+        if(ascending) {
+            return f1.efficiency <= f2.efficiency;
+        } else {
+            return f1.efficiency >= f2.efficiency;
+        }
+
+    } else if (dataType == "seats") {
+
+        if(ascending) {
+            return f1.seats <= f2.seats;
+        } else {
+            return f1.seats >= f2.seats;
+        }
+
+    } else if (dataType == "passengers") {
+
+        if(ascending) {
+            return f1.passengers <= f2.passengers;
+        } else {
+            return f1.passengers >= f2.passengers;
+        }
+
+    } else if (dataType == "distance") {
+
+        if(ascending) {
+            return f1.distance <= f2.distance;
+        } else {
+            return f1.distance >= f2.distance;
+        }
+    }
+}
+
+//shellsort function... average time complexity is O(n^5/4)
+void shellSort(vector<Flights>& flights, int gap, string dataType,bool ascending)
+{
+    int n = flights.size();
+
+    while (gap > 0)
+    {
+        for (int i = gap; i < n; i++)
+        {
+            Flights temp = flights[i];
+            int j = i;
+
+            while (j >= gap && compare(flights[j-gap],temp,dataType,ascending))
+            {
+                flights[j] = flights[j-gap];
+                j -= gap;
+            }
+            flights[j] = temp;
+        }
+        gap/=2.2;
+    }
+}
+
+
 //merge function for mergesort... time complexity is O(n)
-void merge(vector<Flights*>& flights, int left, int middle, int right, string parameter)
+void merge(vector<Flights>& flights, int left, int middle, int right, string dataType, bool ascending)
 {
     int leftSize = middle - left + 1;
     int rightSize = right - middle;
 
 
-    vector<Flights*> leftArr(leftSize);
-    vector<Flights*> rightArr(rightSize);
+    vector<Flights> leftArr(leftSize);
+    vector<Flights> rightArr(rightSize);
 
 
     //fill the right and left vectors with the corresponding data
@@ -34,58 +132,17 @@ void merge(vector<Flights*>& flights, int left, int middle, int right, string pa
     //compare data from left and right sub arrays and merge in the new sorted order
     while (i < leftSize && j < rightSize)
     {
-        if (parameter == "efficiency") {
-            if (leftArr[i]->efficiency >= rightArr[j]->efficiency)
-            {
-                flights[k] = leftArr[i];
-                i++;
-            }
-            else
-            {
-                flights[k] = rightArr[j];
-                j++;
-            }
-            k++;
+        if (mergeCompare(leftArr[i], rightArr[j], dataType, ascending))
+        {
+            flights[k] = leftArr[i];
+            i++;
         }
-        if (parameter == "distance") {
-            if (leftArr[i]->distance >= rightArr[j]->distance)
-            {
-                flights[k] = leftArr[i];
-                i++;
-            }
-            else
-            {
-                flights[k] = rightArr[j];
-                j++;
-            }
-            k++;
+        else
+        {
+            flights[k] = rightArr[j];
+            j++;
         }
-        if (parameter == "passengers") {
-            if (leftArr[i]->passengers >= rightArr[j]->passengers)
-            {
-                flights[k] = leftArr[i];
-                i++;
-            }
-            else
-            {
-                flights[k] = rightArr[j];
-                j++;
-            }
-            k++;
-        }
-        if (parameter == "seats") {
-            if (leftArr[i]->seats >= rightArr[j]->seats)
-            {
-                flights[k] = leftArr[i];
-                i++;
-            }
-            else
-            {
-                flights[k] = rightArr[j];
-                j++;
-            }
-            k++;
-        }
+        k++;
     }
 
     //copy remaining elements from left array
@@ -105,19 +162,19 @@ void merge(vector<Flights*>& flights, int left, int middle, int right, string pa
     }
 }
 
-//mergesort function... time complexity is O(nlog(n))
-void mergeSort(vector<Flights*>& flights, int left, int right, string parameter)
+//mergesort function... average time complexity is O(nlog(n))
+void mergeSort(vector<Flights>& flights, int left, int right, string dataType, bool ascending)
 {
     if (left < right)
     {
         int middle = (left + right) / 2;
 
         //recursively split the vector in half until base case
-        mergeSort(flights, left, middle, parameter);
-        mergeSort(flights, middle + 1, right, parameter);
+        mergeSort(flights, left, middle, dataType, ascending);
+        mergeSort(flights, middle + 1, right, dataType, ascending);
 
         //merge the split vectors together
-        merge(flights, left, middle, right, parameter);
+        merge(flights, left, middle, right, dataType, ascending);
     }
 }
 
