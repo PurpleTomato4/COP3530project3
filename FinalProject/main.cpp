@@ -3,21 +3,22 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <SFML/Graphics.hpp>
+#include <iomanip>
+#include <chrono> 
 #include "Flights.h"
-#include "TextureManager.h"
 #include "constants.h"
 using namespace std;
+using namespace std::chrono; 
 
 //merge function for mergesort... time complexity is O(n)
-void merge(vector<Flights>& flights, int left, int middle, int right)
+void merge(vector<Flights*>& flights, int left, int middle, int right, string parameter)
 {
     int leftSize = middle - left + 1;
     int rightSize = right - middle;
 
 
-    vector<Flights> leftArr(leftSize);
-    vector<Flights> rightArr(rightSize);
+    vector<Flights*> leftArr(leftSize);
+    vector<Flights*> rightArr(rightSize);
 
 
     //fill the right and left vectors with the corresponding data
@@ -33,17 +34,58 @@ void merge(vector<Flights>& flights, int left, int middle, int right)
     //compare data from left and right sub arrays and merge in the new sorted order
     while (i < leftSize && j < rightSize)
     {
-        if (leftArr[i].efficiency >= rightArr[j].efficiency)
-        {
-            flights[k] = leftArr[i];
-            i++;
+        if (parameter == "efficiency") {
+            if (leftArr[i]->efficiency >= rightArr[j]->efficiency)
+            {
+                flights[k] = leftArr[i];
+                i++;
+            }
+            else
+            {
+                flights[k] = rightArr[j];
+                j++;
+            }
+            k++;
         }
-        else
-        {
-            flights[k] = rightArr[j];
-            j++;
+        if (parameter == "distance") {
+            if (leftArr[i]->distance >= rightArr[j]->distance)
+            {
+                flights[k] = leftArr[i];
+                i++;
+            }
+            else
+            {
+                flights[k] = rightArr[j];
+                j++;
+            }
+            k++;
         }
-        k++;
+        if (parameter == "passengers") {
+            if (leftArr[i]->passengers >= rightArr[j]->passengers)
+            {
+                flights[k] = leftArr[i];
+                i++;
+            }
+            else
+            {
+                flights[k] = rightArr[j];
+                j++;
+            }
+            k++;
+        }
+        if (parameter == "seats") {
+            if (leftArr[i]->seats >= rightArr[j]->seats)
+            {
+                flights[k] = leftArr[i];
+                i++;
+            }
+            else
+            {
+                flights[k] = rightArr[j];
+                j++;
+            }
+            k++;
+        }
     }
 
     //copy remaining elements from left array
@@ -64,30 +106,28 @@ void merge(vector<Flights>& flights, int left, int middle, int right)
 }
 
 //mergesort function... time complexity is O(nlog(n))
-void mergeSort(vector<Flights>& flights, int left, int right)
+void mergeSort(vector<Flights*>& flights, int left, int right, string parameter)
 {
     if (left < right)
     {
         int middle = (left + right) / 2;
 
         //recursively split the vector in half until base case
-        mergeSort(flights, left, middle);
-        mergeSort(flights, middle + 1, right);
+        mergeSort(flights, left, middle, parameter);
+        mergeSort(flights, middle + 1, right, parameter);
 
         //merge the split vectors together
-        merge(flights, left, middle, right);
+        merge(flights, left, middle, right, parameter);
     }
 }
 
-vector<Flights*> PullData() {
-    vector<Flights*> flights;
-    flights.reserve(120000); 
+void PullData(vector<Flights*>& flights) {
 
     ifstream input("flightdata.csv");
     if (!input.is_open())
     {
         cout << "Error: File not detected." << endl;
-        return flights; 
+        return; 
     }
     string line;
     getline(input, line);
@@ -118,121 +158,142 @@ vector<Flights*> PullData() {
             }
         }
         getline(stream, name, ',');
-        Flights* newFlight = new Flights(stof(seats), stof(passengers), name, stof(distance));
+        Flights* newFlight = new Flights(stof(seats), stof(passengers), name, stof(distance)); 
         flights.push_back(newFlight);
     }
-    return flights; 
-}
-
-string flightsToString(const Flights& flight) {
-    // Convert Flights data to a string
-    string flightInfo = "Name: " + flight.name +
-        " Seats: " + std::to_string(flight.seats) +
-        " Passengers: " + std::to_string(flight.passengers) +
-        " Distance: " + std::to_string(flight.distance) +
-        " Efficiency: " + std::to_string(flight.efficiency);
-    return flightInfo;
 }
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Sorter 1000");
+    cout << "Loading flight database..." << endl << endl; 
 
-    vector<Flights*> data = PullData(); 
-    /*vector<Flights*> data; 
-    Flights* flight = new Flights();
-    data.push_back(flight); */
+    vector<Flights*> data;
+    PullData(data);
 
-    int scrollOffset = 0; 
+    cout << "Welcome to the Airline Sorter 1000. What would you like to do?" << endl << endl;
 
-    sf::Sprite flightSortSprite;
-    sf::Sprite rawDataSprite;
-    sf::Sprite testSprite1; 
-    sf::Sprite testSprite2; 
+    bool menu = true;
+    int counter = 0;
 
-    flightSortSprite.setTexture(TextureManager::GetTexture("AirlineSort")); // 309 x 88
-    flightSortSprite.setPosition(LEFT_MENU_X, LEFT_MENU_Y);
-    rawDataSprite.setTexture(TextureManager::GetTexture("SourceData")); // 309 x 88
-    rawDataSprite.setPosition(RIGHT_MENU_X, RIGHT_MENU_Y);
-    testSprite1.setTexture(TextureManager::GetTexture("testImage1"));
-    testSprite1.setPosition(WIDTH / 2, HEIGHT / 2);
-    testSprite2.setTexture(TextureManager::GetTexture("testImage2"));
-    testSprite2.setPosition(WIDTH / 2, HEIGHT / 2);
-
-    bool displayTest1 = false; 
-    bool displayTest2 = false; 
-
-    while (window.isOpen()) {
-
-        //window.clear(); 
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            //window.clear(); // Clear the window
-
-            // Draw sprites
-            window.draw(flightSortSprite);
-            window.draw(rawDataSprite);
-
-            window.display(); 
-
-            // allow window closure 
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-            if (event.type == sf::Event::MouseButtonPressed) {
-                auto mousePosition = sf::Mouse::getPosition(window);
-                int x = mousePosition.x;
-                int y = mousePosition.y;
-
-                if (x >= 0 && x < WIDTH && y >= 0 && y < (RIGHT_MENU_Y + BUTTON_HEIGHT)) { 
-                    if (event.mouseButton.button == sf::Mouse::Left) {
-                        // determine what sprite is being clicked
-                        if (flightSortSprite.getGlobalBounds().contains(x, y)) {
-                            displayTest1 = true; 
-                            cout << "Flight sort sprite" << endl; 
-                        }
-                        if (rawDataSprite.getGlobalBounds().contains(x, y)) {
-                            displayTest2 = true; 
-                            cout << "Raw data sprite" << endl; 
-                        }
-                    }
-                }
-            }
-            if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Up) {
-                    if (scrollOffset > 0) {
-                        scrollOffset -= 1; 
-                    }
-                }
-                else if (event.key.code == sf::Keyboard::Down) {
-                    if (scrollOffset < static_cast<int>(data.size()) - NUM_VISIBLE_ROWS) {
-                        scrollOffset += 1; 
-                    }
-                }
-            }
+    while (menu) {
+        if (counter > 0) {
+            cout << "Would you like to do anything else?" << endl << endl; 
         }
-        for (int i = scrollOffset; i < scrollOffset + NUM_VISIBLE_ROWS && i < data.size(); i++) {
-            sf::Font font;
-            if (!font.loadFromFile("arial.ttf")) {
-                cout << "No font file" << endl; 
-                return EXIT_FAILURE;
-            }
-            sf::Text flightText;
-            flightText.setFont(font);
-            flightText.setString(flightsToString(*data[i]));
-            flightText.setCharacterSize(14); 
-            flightText.setPosition(10, (i - scrollOffset) * ROW_HEIGHT); 
-            window.draw(flightText); 
-        }
+        cout << "1. Sort by efficiency." << endl; 
+        cout << "2. Sort by seats." << endl; 
+        cout << "3. Sort by passengers." << endl; 
+        cout << "4. Sort by distance." << endl; 
+        cout << "0. Exit" << endl << endl; 
+        counter += 1; 
 
-        window.display(); 
+        int input; 
+        cin >> input;
+        cout << endl; 
+
+        if (input == 1) {
+            auto start = high_resolution_clock::now(); 
+            mergeSort(data, 0, data.size() - 1, "efficiency");
+            auto stop = high_resolution_clock::now(); 
+            auto duration = duration_cast<microseconds>(stop - start); 
+
+            int field_one_width = 0;
+            int field_two_width = 0;
+
+            for (int i = 0; i < 20; i++) {
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->efficiency).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->efficiency).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Efficiency: " << setw(6) << data[i]->efficiency << endl;
+            }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+        }
+        if (input == 2) {
+            auto start = high_resolution_clock::now();
+            mergeSort(data, 0, data.size() - 1, "seats");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
+            int field_one_width = 0;
+            int field_two_width = 0;
+            for (int i = 0; i < 20; i++) {
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->seats).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->seats).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Seats: " << setw(5) << data[i]->seats << endl;
+            }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+        }
+        if (input == 3) {
+            auto start = high_resolution_clock::now();
+            mergeSort(data, 0, data.size() - 1, "passengers");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
+            int field_one_width = 0; 
+            int field_two_width = 0; 
+            for (int i = 0; i < 20; i++) {
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length(); 
+                }
+                if (to_string(data[i]->passengers).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->passengers).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " << 
+                    setw(field_one_width) << left << data[i]->name << 
+                    "|" << " Passengers: " << setw(5) << data[i]->passengers << endl;
+            }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+        }
+        if (input == 4) {
+            auto start = high_resolution_clock::now();
+            mergeSort(data, 0, data.size() - 1, "distance");
+            auto stop = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(stop - start);
+
+            int field_one_width = 0;
+            int field_two_width = 0;
+            for (int i = 0; i < 20; i++) {
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->distance).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->distance).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Distance: " << setw(5) << data[i]->distance << endl;
+            }
+            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+        }
+        cout << endl; 
+        if (input == 0) {
+            cout << "Airline Sorter 1000 logging off. Goodbye." << endl; 
+            menu = false; 
+        }
+        if (input < 0 || input > 4) {
+            cout << "Invalid input. Please try again." << endl; 
+        }
     }
-    for (Flights* flight : data) {
-        delete flight;
-    }
-    data.clear();
+    
+
     return 0; 
 }
 
