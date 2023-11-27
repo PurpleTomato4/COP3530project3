@@ -3,11 +3,9 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <SFML/Graphics.hpp>
-#include "Flights.h"
-#include "TextureManager.h"
-#include "constants.h"
 #include <iomanip>
+#include "Flights.h"
+#include "constants.h"
 using namespace std;
 
 //merge function for mergesort... time complexity is O(n)
@@ -183,14 +181,38 @@ int main()
 
         if (input == 1) {
             mergeSort(data, 0, data.size() - 1, "efficiency");
+            int field_one_width = 0;
+            int field_two_width = 0;
             for (int i = 0; i < 20; i++) {
-                cout << i + 1 << ". " << "Airline: " << data[i]->name << " Efficiency: " << data[i]->efficiency << endl;
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->efficiency).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->efficiency).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Efficiency: " << setw(6) << data[i]->efficiency << endl;
             }
         }
         if (input == 2) {
             mergeSort(data, 0, data.size() - 1, "seats");
+            int field_one_width = 0;
+            int field_two_width = 0;
             for (int i = 0; i < 20; i++) {
-                cout << i + 1 << ". " << "Airline: " << data[i]->name << " Seats: " << data[i]->seats << endl;
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->seats).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->seats).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Seats: " << setw(5) << data[i]->seats << endl;
             }
         }
         if (input == 3) {
@@ -206,18 +228,32 @@ int main()
                 }
             }
             for (int i = 0; i < 20; i++) {
-                cout << setw(2) << right << i + 1 << ". " << "Airline: " << setw(field_one_width) << left << data[i]->name << "|" << " Passengers: " << setw(5) << data[i]->passengers << endl;
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " << 
+                    setw(field_one_width) << left << data[i]->name << 
+                    "|" << " Passengers: " << setw(5) << data[i]->passengers << endl;
             }
         }
         if (input == 4) {
             mergeSort(data, 0, data.size() - 1, "distance");
+            int field_one_width = 0;
+            int field_two_width = 0;
             for (int i = 0; i < 20; i++) {
-                cout << i + 1 << ". " << "Airline: " << data[i]->name << " Distance: " << data[i]->distance << endl;
+                if (data[i]->name.length() > field_one_width) {
+                    field_one_width = data[i]->name.length();
+                }
+                if (to_string(data[i]->distance).length() > field_two_width) {
+                    field_two_width = to_string(data[i]->distance).length();
+                }
+            }
+            for (int i = 0; i < 20; i++) {
+                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                    setw(field_one_width) << left << data[i]->name <<
+                    "|" << " Distance: " << setw(5) << data[i]->distance << endl;
             }
         }
         cout << endl; 
         if (input == 0) {
-            "Airline Sorter 1000 logging off. Goodbye."; 
+            cout << "Airline Sorter 1000 logging off. Goodbye." << endl; 
             menu = false; 
         }
 
