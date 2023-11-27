@@ -81,7 +81,7 @@ void mergeSort(vector<Flights>& flights, int left, int right)
 
 vector<Flights*> PullData() {
     vector<Flights*> flights;
-    flights.reserve(120000); 
+    flights.reserve(120000);
 
     ifstream input("flightdata.csv");
     if (!input.is_open())
