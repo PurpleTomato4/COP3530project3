@@ -181,42 +181,55 @@ void mergeSort(vector<Flights>& flights, int left, int right, string dataType, b
 void PullData(vector<Flights*>& flights) {
 
     ifstream input("flightdata.csv");
-    if (!input.is_open())
-    {
+
+    map <string, Flights*> flightsMap;
+
+    if (!input.is_open()) {
         cout << "Error: File not detected." << endl;
-        return; 
-    }
-    string line;
-    getline(input, line);
-    while (getline(input, line))
-    {
-        istringstream stream(line);
-        //anytime get line is used with token it is just to skip past that piece of data
-        string token;
-        string departures;
-        string seats;
-        string passengers;
-        string distance;
-        string name;
+    } else {
 
-        getline(stream, token, ',');
-        getline(stream, departures, ',');
-        getline(stream, token, ',');
-        getline(stream, seats, ',');
-        getline(stream, passengers, ',');
+        string line;
+        getline(input, line);
 
-        for (int i = 0; i < 7; i++)
-        {
-            if (i == 2) {
-                getline(stream, distance, ',');
+        while (getline(input, line)) {
+
+            istringstream stream(line);
+
+            //anytime get line is used with token it is just to skip past that piece of data
+            string token;
+            string departures;
+            string seats;
+            string passengers;
+            string distance;
+            string name;
+
+            getline(stream, token, ',');
+            getline(stream, departures, ',');
+            getline(stream, token, ',');
+            getline(stream, seats, ',');
+            getline(stream, passengers, ',');
+
+            for (int i = 0; i < 7; i++) {
+                if (i == 2) {
+                    getline(stream, distance, ',');
+                } else {
+                    getline(stream, token, ',');
+                }
             }
-            else {
-                getline(stream, token, ',');
+
+            getline(stream, name, ',');
+            Flights* newFlight = new Flights(stof(seats), stof(passengers), name, stof(distance));
+
+            if (flightsMap.find(name) == flightsMap.end()) {
+                flightsMap[name] = newFlight;
+            } else {
+                flightsMap[name]->Increment(stof(seats), stof(passengers), stof(distance));
             }
         }
-        getline(stream, name, ',');
-        Flights* newFlight = new Flights(stof(seats), stof(passengers), name, stof(distance)); 
-        flights.push_back(newFlight);
+
+        for (auto iter = flightsMap.begin(); iter != flightsMap.end(); iter++) {
+            flights.push_back(iter->second);
+        }
     }
 }
 
