@@ -98,14 +98,14 @@ void shellSort(vector<Flights*>& flights, int gap, string dataType, bool ascendi
             Flights* temp = flights[i];
             int j = i;
 
-            while (j >= gap && compare(flights[j-gap], temp, dataType, ascending))
+            while (j >= gap && compare(flights[j - gap], temp, dataType, ascending))
             {
-                flights[j] = flights[j-gap];
+                flights[j] = flights[j - gap];
                 j -= gap;
             }
             flights[j] = temp;
         }
-        gap/=2.2;
+        gap /= 2.2;
     }
 }
 
@@ -179,6 +179,69 @@ void mergeSort(vector<Flights*>& flights, int left, int right, string dataType, 
     }
 }
 
+void printData(vector<Flights*>& flights, string dataType, int& field_one_width, int& field_two_width) {
+    if (dataType == "efficiency") {
+        for (int i = 0; i < 20; i++) {
+            if (flights[i]->name.length() > field_one_width) {
+                field_one_width = flights[i]->name.length();
+            }
+            if (to_string(flights[i]->efficiency).length() > field_two_width) {
+                field_two_width = to_string(flights[i]->efficiency).length();
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                setw(field_one_width) << left << flights[i]->name <<
+                "|" << " Efficiency: " << setw(6) << flights[i]->efficiency << endl;
+        }
+    }
+    if (dataType == "seats") {
+        for (int i = 0; i < 20; i++) {
+            if (flights[i]->name.length() > field_one_width) {
+                field_one_width = flights[i]->name.length();
+            }
+            if (to_string(flights[i]->seats).length() > field_two_width) {
+                field_two_width = to_string(flights[i]->seats).length();
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                setw(field_one_width) << left << flights[i]->name <<
+                "|" << " Seats: " << setw(5) << flights[i]->seats << endl;
+        }
+    }
+    if (dataType == "distance") {
+        for (int i = 0; i < 20; i++) {
+            if (flights[i]->name.length() > field_one_width) {
+                field_one_width = flights[i]->name.length();
+            }
+            if (to_string(flights[i]->distance).length() > field_two_width) {
+                field_two_width = to_string(flights[i]->distance).length();
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                setw(field_one_width) << left << flights[i]->name <<
+                "|" << " Distance: " << setw(5) << flights[i]->distance << endl;
+        }
+    }
+    if (dataType == "passengers") {
+        for (int i = 0; i < 20; i++) {
+            if (flights[i]->name.length() > field_one_width) {
+                field_one_width = flights[i]->name.length();
+            }
+            if (to_string(flights[i]->passengers).length() > field_two_width) {
+                field_two_width = to_string(flights[i]->passengers).length();
+            }
+        }
+        for (int i = 0; i < 20; i++) {
+            cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+                setw(field_one_width) << left << flights[i]->name <<
+                "|" << " Passengers: " << setw(5) << flights[i]->passengers << endl;
+        }
+    }
+}
+
 void PullData(vector<Flights*>& flights) {
 
     ifstream input("flightdata.csv");
@@ -238,6 +301,7 @@ int main()
 {
     cout << "Loading flight database..." << endl << endl; 
 
+    string dataTypes[] = { "efficiency" , "seats", "passengers", "distance" };
     vector<Flights*> data;
     PullData(data);
 
@@ -250,118 +314,122 @@ int main()
         if (counter > 0) {
             cout << "Would you like to do anything else?" << endl << endl; 
         }
-        cout << "1. Sort by efficiency." << endl; 
-        cout << "2. Sort by seats." << endl; 
-        cout << "3. Sort by passengers." << endl; 
-        cout << "4. Sort by distance." << endl; 
-        cout << "0. Exit" << endl << endl; 
-        counter += 1; 
+        cout << "1. Sort using MergeSort" << endl;
+        cout << "2. Sort using ShellSort" << endl;
+        cout << "3. Sort using QuickSort" << endl;
+        cout << "0. Exit" << endl << endl;
+        counter += 1;
 
         int input; 
         cin >> input;
         cout << endl; 
 
         if (input == 1) {
+
+            cout << "What would you like to sort by?" << endl << endl;
+            cout << "1. Sort by efficiency." << endl;
+            cout << "2. Sort by seats." << endl;
+            cout << "3. Sort by passengers." << endl;
+            cout << "4. Sort by distance." << endl;
+            cout << "0. Exit" << endl << endl;
+
+            int type; 
+            cin >> type; 
+            cout << endl; 
+
+            cout << "In what order would you like to sort?" << endl << endl;
+            cout << "1. Descending" << endl;
+            cout << "2. Ascending" << endl;
+
+            int ascending; 
+            cin >> ascending; 
+            ascending--; 
+
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "efficiency", false);
-            //Sort<Flights*> sorter(Flights::EfficiencyCompGT);
-            //sorter.QuickSort(data, 0, data.size() - 1);
+            mergeSort(data, 0, data.size() - 1, dataTypes[type - 1], ascending);
             auto stop = high_resolution_clock::now(); 
             auto duration = duration_cast<microseconds>(stop - start); 
 
             int field_one_width = 0;
             int field_two_width = 0;
 
-            for (int i = 0; i < 20; i++) {
-                if (data[i]->name.length() > field_one_width) {
-                    field_one_width = data[i]->name.length();
-                }
-                if (to_string(data[i]->efficiency).length() > field_two_width) {
-                    field_two_width = to_string(data[i]->efficiency).length();
-                }
-            }
-            for (int i = 0; i < 20; i++) {
-                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
-                    setw(field_one_width) << left << data[i]->name <<
-                    "|" << " Efficiency: " << setw(6) << data[i]->efficiency << endl;
-            }
-            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+            printData(data, dataTypes[type - 1], field_one_width, field_two_width);
+
+            cout << endl << "Mergesort time to completion: " << duration.count() << " microseconds" << endl;
         }
-        if (input == 2) {
+        if (input == 2) { // Shellsort 
+
+            cout << "What would you like to sort by?" << endl << endl;
+            cout << "1. Sort by efficiency." << endl;
+            cout << "2. Sort by seats." << endl;
+            cout << "3. Sort by passengers." << endl;
+            cout << "4. Sort by distance." << endl;
+            cout << "0. Exit" << endl << endl;
+
+            int type;
+            cin >> type;
+            cout << endl;
+
+            cout << "In what order would you like to sort?" << endl << endl;
+            cout << "1. Descending" << endl;
+            cout << "2. Ascending" << endl;
+
+            int ascending;
+            cin >> ascending;
+            ascending--;
+
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "seats", true);
+            shellSort(data, 1, dataTypes[type - 1], ascending); 
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 
             int field_one_width = 0;
             int field_two_width = 0;
-            for (int i = 0; i < 20; i++) {
-                if (data[i]->name.length() > field_one_width) {
-                    field_one_width = data[i]->name.length();
-                }
-                if (to_string(data[i]->seats).length() > field_two_width) {
-                    field_two_width = to_string(data[i]->seats).length();
-                }
-            }
-            for (int i = 0; i < 20; i++) {
-                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
-                    setw(field_one_width) << left << data[i]->name <<
-                    "|" << " Seats: " << setw(5) << data[i]->seats << endl;
-            }
-            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
-        }
-        if (input == 3) {
-            auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "passengers", true);
-            auto stop = high_resolution_clock::now();
-            auto duration = duration_cast<microseconds>(stop - start);
 
-            int field_one_width = 0; 
-            int field_two_width = 0; 
-            for (int i = 0; i < 20; i++) {
-                if (data[i]->name.length() > field_one_width) {
-                    field_one_width = data[i]->name.length(); 
-                }
-                if (to_string(data[i]->passengers).length() > field_two_width) {
-                    field_two_width = to_string(data[i]->passengers).length();
-                }
-            }
-            for (int i = 0; i < 20; i++) {
-                cout << setw(2) << right << i + 1 << ". " << "Airline: " << 
-                    setw(field_one_width) << left << data[i]->name << 
-                    "|" << " Passengers: " << setw(5) << data[i]->passengers << endl;
-            }
-            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+            printData(data, dataTypes[type - 1], field_one_width, field_two_width);
+
+            cout << endl << "Shellsort time to completion: " << duration.count() << " microseconds" << endl;
         }
-        if (input == 4) {
+        if (input == 3) { // Quicksort 
+
+            cout << "What would you like to sort by?" << endl << endl;
+            cout << "1. Sort by efficiency." << endl;
+            cout << "2. Sort by seats." << endl;
+            cout << "3. Sort by passengers." << endl;
+            cout << "4. Sort by distance." << endl;
+            cout << "0. Exit" << endl << endl;
+
+            int type;
+            cin >> type;
+            cout << endl;
+
+            cout << "In what order would you like to sort?" << endl << endl;
+            cout << "1. Descending" << endl;
+            cout << "2. Ascending" << endl;
+
+            int ascending;
+            cin >> ascending;
+            ascending--;
+
             auto start = high_resolution_clock::now();
-            mergeSort(data, 0, data.size() - 1, "distance", true);
+            Sort<Flights*> sorter(Flights::EfficiencyCompGT);
+            sorter.QuickSort(data, 0, data.size() - 1);
             auto stop = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(stop - start);
 
             int field_one_width = 0;
             int field_two_width = 0;
-            for (int i = 0; i < 20; i++) {
-                if (data[i]->name.length() > field_one_width) {
-                    field_one_width = data[i]->name.length();
-                }
-                if (to_string(data[i]->distance).length() > field_two_width) {
-                    field_two_width = to_string(data[i]->distance).length();
-                }
-            }
-            for (int i = 0; i < 20; i++) {
-                cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
-                    setw(field_one_width) << left << data[i]->name <<
-                    "|" << " Distance: " << setw(5) << data[i]->distance << endl;
-            }
-            cout << endl << "Merge sort time to completion: " << duration.count() << " microseconds" << endl;
+
+            printData(data, dataTypes[type - 1], field_one_width, field_two_width);
+
+            cout << endl << "Quicksort time to completion: " << duration.count() << " microseconds" << endl;
         }
         cout << endl; 
         if (input == 0) {
             cout << "Airline Sorter 1000 logging off. Goodbye." << endl; 
             menu = false; 
         }
-        if (input < 0 || input > 4) {
+        if (input < 0 || input > 3) {
             cout << "Invalid input. Please try again." << endl; 
         }
     }
