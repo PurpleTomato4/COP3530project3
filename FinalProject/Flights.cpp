@@ -27,3 +27,7 @@ void Flights::Increment(float _seats, float _passengers, float _distance)
         efficiency = 0;
     }
 }
+
+bool Flights::EfficiencyCompGT(Flights *a, Flights *b) {
+    return a->efficiency < b->efficiency;
+}

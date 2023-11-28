@@ -7,6 +7,7 @@
 #include <chrono> 
 #include <map>
 #include "Flights.h"
+#include "Sort.h"
 #include "constants.h"
 using namespace std;
 using namespace std::chrono; 
@@ -261,8 +262,10 @@ int main()
         cout << endl; 
 
         if (input == 1) {
-            auto start = high_resolution_clock::now(); 
+            auto start = high_resolution_clock::now();
             mergeSort(data, 0, data.size() - 1, "efficiency", false);
+            //Sort<Flights*> sorter(Flights::EfficiencyCompGT);
+            //sorter.QuickSort(data, 0, data.size() - 1);
             auto stop = high_resolution_clock::now(); 
             auto duration = duration_cast<microseconds>(stop - start); 
 
