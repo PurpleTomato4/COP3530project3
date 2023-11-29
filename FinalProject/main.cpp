@@ -9,6 +9,7 @@
 #include "Flights.h"
 #include "Sort.h"
 #include "constants.h"
+#include "FlightData.h"
 using namespace std;
 using namespace std::chrono; 
 
@@ -301,9 +302,8 @@ int main()
 {
     cout << "Loading flight database..." << endl << endl; 
 
-    string dataTypes[] = { "efficiency" , "seats", "passengers", "distance" };
-    vector<Flights*> data;
-    PullData(data);
+    FlightData data;
+    data.LoadData("flightdata.csv");
 
     cout << "Welcome to the Airline Sorter 1000. What would you like to do?" << endl << endl;
 
