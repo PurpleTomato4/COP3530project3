@@ -8,19 +8,31 @@ template <typename T>
 
 class Sort {
 private:
-    std::function<bool(T, T)> _comp;
+    std::function<bool(T, T, bool ascending)> _comp;
+    bool _ascending;
+
+public:
+    Sort(function<bool(T, T, bool ascending)> comp, bool asc);
+    // Quick Sort Functions
+    void QuickSort(vector<T>& data, int low, int high);
+private:
     void swap(vector<T>& data, int a, int b);
     int partition(vector<T>& data, int low, int high);
+
+    // Merge Sort Functions
 public:
-    Sort(function<bool(T, T)> comp);
-    void QuickSort(vector<T>& data, int low, int high);
+    void MergeSort(vector<T>& data, int left, int right);
+private:
+    void merge(vector<T>& data, int left, int middle, int right);
 };
 
 template <typename T>
-Sort<T>::Sort(function<bool(T, T)> comp) {
+Sort<T>::Sort(function<bool(T, T, bool ascending)> comp, bool asc) {
+    _ascending = asc;
     _comp = comp;
 }
 
+/*** Quick Sort ***/
 template <typename T>
 void Sort<T>::QuickSort(vector<T>& data, int low, int high) {
     if (low < high) {
@@ -38,13 +50,13 @@ int Sort<T>::partition(vector<T>& data, int low, int high) {
 
     while (up < down) {
         for (int j = up; j < high; j++) {
-            if (_comp(data[up], pivot)) {
+            if (_comp(data[up], pivot, _ascending)) {
                 break;
             }
             up++;
         }
         for (int j = high; j > low; j--) {
-            if (!_comp(data[down], pivot)) {
+            if (!_comp(data[down], pivot, _ascending)) {
                 break;
             }
             down--;
@@ -62,3 +74,68 @@ void Sort<T>::swap(vector<T>& data, int a, int b) {
     data[a] = data[b];
     data[b] = temp;
 }
+
+/*** Merge Sort ***/
+template <typename T>
+void Sort<T>::MergeSort(vector<T>& data, int left, int right) {
+    if (left < right) {
+        int middle = (left + right) / 2;
+
+        //recursively split the vector in half until base case
+        MergeSort(data, left, middle);
+        MergeSort(data, middle + 1, right);
+
+        //merge the split vectors together
+        merge(data, left, middle, right);
+    }
+}
+
+template <typename T>
+void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
+    int leftSize = middle - left + 1;
+    int rightSize = right - middle;
+
+    vector<T> leftArr(leftSize);
+    vector<T> rightArr(rightSize);
+
+    //fill the right and left vectors with the corresponding data
+    for (int i = 0; i < leftSize; i++)
+        leftArr[i] = data[left + i];
+    for (int j = 0; j < rightSize; j++)
+        rightArr[j] = data[middle + 1 + j];
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    //compare data from left and right sub arrays and merge in the new sorted order
+    while (i < leftSize && j < rightSize) {
+        if (_comp(leftArr[i], rightArr[j], _ascending)) {
+            data[k] = rightArr[j];
+            j++;
+            //data[k] = leftArr[i];
+            //i++;
+        } else {
+            data[k] = leftArr[i];
+            i++;
+            //data[k] = rightArr[j];
+            //j++;
+        }
+        k++;
+    }
+
+    //copy remaining elements from left array
+    while (i < leftSize) {
+        data[k] = leftArr[i];
+        i++;
+        k++;
+    }
+
+    //copy remaining elements from right array
+    while (j < rightSize) {
+        data[k] = rightArr[j];
+        j++;
+        k++;
+    }
+}
+

@@ -17,7 +17,7 @@ public:
     Flights();
     Flights(float seats, float passengers, string _name, float _distance);
     void Increment(float _seats, float _passengers, float _distance);
-    static bool EfficiencyCompGT(Flights* a, Flights* b);
+    static bool EfficiencyComp(Flights* a, Flights* b, bool ascending);
 };
 
 
