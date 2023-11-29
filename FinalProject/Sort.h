@@ -12,7 +12,10 @@ private:
     bool _ascending;
 
 public:
+    Sort();
     Sort(function<bool(T, T, bool ascending)> comp, bool asc);
+    void SetSortFunction(function<bool(T, T, bool ascending)> comp);
+    void SetSortDirection(bool asc);
 
     // Quick Sort Functions
     void QuickSort(vector<T>& data, int low, int high);
@@ -28,14 +31,27 @@ private:
 
     // Shell Sort Functions
 public:
-    void ShellSort(vector<T>& data, int gap);
+    void ShellSort(vector<T>& data, int gap, int placeholder = 0);
 
 };
+
+template <typename T>
+Sort<T>::Sort() {}
 
 template <typename T>
 Sort<T>::Sort(function<bool(T, T, bool ascending)> comp, bool asc) {
     _ascending = asc;
     _comp = comp;
+}
+
+template <typename T>
+void Sort<T>::SetSortFunction(function<bool(T, T, bool ascending)> comp) {
+    _comp = comp;
+}
+
+template <typename T>
+void Sort<T>::SetSortDirection(bool asc) {
+    _ascending = asc;
 }
 
 /*** Quick Sort ***/
@@ -147,7 +163,7 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
 
 /*** Shell Sort ***/
 template <typename T>
-void Sort<T>::ShellSort(vector<T>& data, int gapConst) {
+void Sort<T>::ShellSort(vector<T>& data, int gapConst, int placeholder) {
     int n = data.size();
     int gap = n / gapConst;
     while (gap > 0) {
