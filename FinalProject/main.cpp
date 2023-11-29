@@ -15,6 +15,7 @@ using namespace std;
 using namespace std::chrono;
 
 bool validateSelection(string userInput, int lowRange, int highRange);
+bool validateGap(string userInput, float lowRange, float highRange);
 
 int main()
 {
@@ -96,7 +97,7 @@ int main()
                 string input;
                 cin >> input;
                 cout << endl;
-                if (!validateSelection(input, 0, 100))
+                if (!validateGap(input, 2, source->size()-1))
                     cout << "Invalid selection. Please try again." << endl << endl;
                 else {
                     shellSortGap = stof(input);
@@ -205,9 +206,25 @@ int main()
 }
 
 bool validateSelection(string userInput, int lowRange, int highRange) {
-    if(userInput.size() > 2 || !isdigit(userInput[0]))
+    if (!isdigit(userInput[0]))
         return false;
-    if (stoi(userInput) < lowRange || stoi(userInput) > highRange)
+    size_t position;
+    int value = stoi(userInput, &position);
+    if (position != userInput.length())
+        return false;
+    if (value < lowRange || value > highRange)
+        return false;
+    return true;
+}
+
+bool validateGap(string userInput, float lowRange, float highRange) {
+    if (!isdigit(userInput[0]))
+        return false;
+    size_t position;
+    float value = stof(userInput, &position);
+    if (position != userInput.length())
+        return false;
+    if (value < lowRange || value > highRange)
         return false;
     return true;
 }
