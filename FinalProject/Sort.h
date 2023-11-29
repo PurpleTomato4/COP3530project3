@@ -13,6 +13,7 @@ private:
 
 public:
     Sort(function<bool(T, T, bool ascending)> comp, bool asc);
+
     // Quick Sort Functions
     void QuickSort(vector<T>& data, int low, int high);
 private:
@@ -24,6 +25,11 @@ public:
     void MergeSort(vector<T>& data, int left, int right);
 private:
     void merge(vector<T>& data, int left, int middle, int right);
+
+    // Shell Sort Functions
+public:
+    void ShellSort(vector<T>& data, int gap);
+
 };
 
 template <typename T>
@@ -136,6 +142,25 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
         data[k] = rightArr[j];
         j++;
         k++;
+    }
+}
+
+/*** Shell Sort ***/
+template <typename T>
+void Sort<T>::ShellSort(vector<T>& data, int gapConst) {
+    int n = data.size();
+    int gap = n / gapConst;
+    while (gap > 0) {
+        for (int i = gap; i < n; i++) {
+            T temp = data[i];
+            int j = i;
+            while (j >= gap && _comp(data[j - gap], temp, _ascending)) {
+                data[j] = data[j - gap];
+                j -= gap;
+            }
+            data[j] = temp;
+        }
+        gap /= gapConst;
     }
 }
 

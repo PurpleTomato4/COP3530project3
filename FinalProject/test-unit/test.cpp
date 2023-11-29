@@ -62,3 +62,27 @@ TEST_CASE("04: MergeSort Test - Descending", "[flag]"){
 
     REQUIRE(numbers == sorted);
 }
+
+TEST_CASE("05: ShellSort Test - Ascending", "[flag]"){
+    // Test Vector of Ints:
+
+    vector<int> numbers = {6, 4, 5, 3, 2, 1, 0};
+    Sort<int> sorter(intComp, 1);
+    sorter.ShellSort(numbers, 2);
+
+    vector<int> sorted = {0, 1, 2, 3, 4, 5, 6};
+
+    REQUIRE(numbers == sorted);
+}
+
+TEST_CASE("06: ShellSort Test - Descending", "[flag]"){
+    // Test Vector of Ints:
+
+    vector<int> numbers = {6, 4, 5, 3, 2, 1, 0};
+    Sort<int> sorter(intComp, 0);
+    sorter.ShellSort(numbers, 2);
+
+    vector<int> sorted = {6, 5, 4, 3, 2, 1, 0};
+
+    REQUIRE(numbers == sorted);
+}
