@@ -90,7 +90,7 @@ int main()
 
         float shellSortGap;
 
-        if (sortOption == 2) {
+        if (sortOption == 2 || sortOption == 4) {
             while (true) {
                 cout << "ShellSort Gap: ";
                 string input;
@@ -109,7 +109,7 @@ int main()
         while (true) {
             cout << "In what order would you like to sort?" << endl << endl;
             cout << "1. Descending" << endl;
-            cout << "2. Ascending" << endl;
+            cout << "2. Ascending" << endl << endl;
             string input;
             cin >> input;
             cout << endl;
@@ -129,12 +129,69 @@ int main()
 
         sorter.SetSortDirection(ascending);
 
-        if (sortOption == 1)
+        duration<double> mergeTime;
+        duration<double> shellTime;
+        duration<double> quickTime;
+
+        if (sortOption == 1) {
+            auto start = high_resolution_clock::now();
             sorter.MergeSort(*source, 0, source->size() - 1);
-        else if (sortOption == 2)
+            auto stop = high_resolution_clock::now();
+            mergeTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+            << duration_cast<microseconds>(mergeTime).count()
+            << " micro seconds using MergeSort" << endl << endl;
+        }
+        else if (sortOption == 2) {
+            auto start = high_resolution_clock::now();
             sorter.ShellSort(*source, shellSortGap);
-        else if (sortOption == 3)
+            auto stop = high_resolution_clock::now();
+            shellTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+                 << duration_cast<microseconds>(shellTime).count()
+                    << " micro seconds using ShellSort with a gap of "
+                    << shellSortGap << endl << endl;
+        }
+        else if (sortOption == 3) {
+            auto start = high_resolution_clock::now();
             sorter.QuickSort(*source, 0, source->size() - 1);
+            sorter.ShellSort(*source, shellSortGap);
+            auto stop = high_resolution_clock::now();
+            quickTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+                 << duration_cast<microseconds>(quickTime).count()
+                 << " micro seconds using QuickSort" << endl << endl;
+        }
+        else if (sortOption == 4) {
+            // Create two copies of the data to be sorted
+            vector<Flights*> shellCopy = *source;
+            vector<Flights*> quickCopy = *source;
+
+            auto start = high_resolution_clock::now();
+            sorter.MergeSort(*source, 0, source->size() - 1);
+            auto stop = high_resolution_clock::now();
+            mergeTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+                 << duration_cast<microseconds>(mergeTime).count()
+                 << " micro seconds using MergeSort" << endl;
+
+            start = high_resolution_clock::now();
+            sorter.ShellSort(shellCopy, shellSortGap);
+            stop = high_resolution_clock::now();
+            shellTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+                 << duration_cast<microseconds>(shellTime).count()
+                 << " micro seconds using ShellSort with a gap of "
+                 << shellSortGap << endl;
+
+            start = high_resolution_clock::now();
+            sorter.QuickSort(quickCopy, 0, source->size() - 1);
+            stop = high_resolution_clock::now();
+            quickTime = stop - start;
+            cout << "Sorted " << source->size() << " elements in "
+                 << duration_cast<microseconds>(quickTime).count()
+                 << " micro seconds using QuickSort" << endl << endl;
+        }
 
         if (analysisType == 1)
             data.PrintCarrierTop20();
@@ -142,6 +199,7 @@ int main()
             data.PrintCityPairTop20();
         else if (analysisType == 3)
             data.PrintDistanceTop20();
+
     }
     return 0; 
 }

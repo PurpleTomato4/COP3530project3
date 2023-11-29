@@ -149,6 +149,7 @@ void FlightData::PrintCarrierTop20() {
              "|" << " Efficiency: " << setw(6)
              << _airCarrierData[i]->_efficiency << endl;
     }
+    cout << endl;
 }
 
 void FlightData::PrintCityPairTop20() {
@@ -176,6 +177,7 @@ void FlightData::PrintCityPairTop20() {
              "|" << " Efficiency: " << setw(6)
              << _cityPairs[i]->_efficiency << endl;
     }
+    cout << endl;
 }
 
 void FlightData::PrintDistanceTop20() {
@@ -203,4 +205,5 @@ void FlightData::PrintDistanceTop20() {
              "|" << " Distance: " << setw(6)
              << _flightData[i]->_distance << endl;
     }
+    cout << endl;
 }
