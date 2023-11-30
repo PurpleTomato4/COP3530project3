@@ -49,12 +49,14 @@ int main()
             }
         }
 
-        if (analysisType == 0)
+        if (analysisType == 0) {
+            cout << "Airline Sorter 1000 logging off. Goodbye." << endl;
             break;
+        }
 
         Sort<Flights *> sorter;
 
-        vector<Flights *> *source;
+        vector<Flights *> *source = nullptr;
         if (analysisType == 1) {
             source = &data._airCarrierData;
             sorter.SetSortFunction(Flights::EfficiencyComp);
@@ -86,25 +88,11 @@ int main()
             }
         }
 
-        if (sortOption == 0)
+        if (sortOption == 0) {
+            cout << "Airline Sorter 1000 logging off. Goodbye." << endl;
             break;
+        };
 
-        float shellSortGap;
-
-        if (sortOption == 2 || sortOption == 4) {
-            while (true) {
-                cout << "ShellSort Gap: ";
-                string input;
-                cin >> input;
-                cout << endl;
-                if (!validateGap(input, 2, source->size()-1))
-                    cout << "Invalid selection. Please try again." << endl << endl;
-                else {
-                    shellSortGap = stof(input);
-                    break;
-                }
-            }
-        }
 
         int direction;
         while (true) {
@@ -141,27 +129,25 @@ int main()
             mergeTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
             << duration_cast<microseconds>(mergeTime).count()
-            << " micro seconds using MergeSort" << endl << endl;
+            << " microseconds using MergeSort" << endl << endl;
         }
         else if (sortOption == 2) {
             auto start = high_resolution_clock::now();
-            sorter.ShellSort(*source, shellSortGap);
+            sorter.ShellSort(*source);
             auto stop = high_resolution_clock::now();
             shellTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
                  << duration_cast<microseconds>(shellTime).count()
-                    << " micro seconds using ShellSort with a gap of "
-                    << shellSortGap << endl << endl;
+                    << " microseconds" << endl << endl;
         }
         else if (sortOption == 3) {
             auto start = high_resolution_clock::now();
             sorter.QuickSort(*source, 0, source->size() - 1);
-            sorter.ShellSort(*source, shellSortGap);
             auto stop = high_resolution_clock::now();
             quickTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
                  << duration_cast<microseconds>(quickTime).count()
-                 << " micro seconds using QuickSort" << endl << endl;
+                 << " microseconds using QuickSort" << endl << endl;
         }
         else if (sortOption == 4) {
             // Create two copies of the data to be sorted
@@ -174,16 +160,15 @@ int main()
             mergeTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
                  << duration_cast<microseconds>(mergeTime).count()
-                 << " micro seconds using MergeSort" << endl;
+                 << " microseconds using MergeSort" << endl;
 
             start = high_resolution_clock::now();
-            sorter.ShellSort(shellCopy, shellSortGap);
+            sorter.ShellSort(shellCopy);
             stop = high_resolution_clock::now();
             shellTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
                  << duration_cast<microseconds>(shellTime).count()
-                 << " micro seconds using ShellSort with a gap of "
-                 << shellSortGap << endl;
+                 << " microseconds using ShellSort" << endl;
 
             start = high_resolution_clock::now();
             sorter.QuickSort(quickCopy, 0, source->size() - 1);
@@ -191,7 +176,7 @@ int main()
             quickTime = stop - start;
             cout << "Sorted " << source->size() << " elements in "
                  << duration_cast<microseconds>(quickTime).count()
-                 << " micro seconds using QuickSort" << endl << endl;
+                 << " microseconds using QuickSort" << endl << endl;
         }
 
         if (analysisType == 1)
