@@ -1,11 +1,18 @@
-#ifndef PROJECT3_FLIGHTS_H
-#define PROJECT3_FLIGHTS_H
+/** COP3530 Project 3 - Airline Sorter 1000
+ ** University of Florida - Fall 2023
+ ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Wilson
+ ** Date: 12/07/2023
+ ** Description: Custom class for processing data loaded from T100-Domestic
+ **              Segment reports from the USDOT Bureau of Transportation
+ **              Statistics.
+ **/
+
+#pragma once
+
 #include <string>
 using namespace std;
 
-class Flights {
-
-public:
+struct Flights {
 
     string _carrier = "";
     string _origin = "";
@@ -21,5 +28,3 @@ public:
     static bool EfficiencyComp(Flights* a, Flights* b, bool ascending);
     static bool DistanceComp(Flights* a, Flights* b, bool ascending);
 };
-
-#endif //PROJECT3_FLIGHTS_H

@@ -13,7 +13,7 @@
  **              algorithms to use and specify sort order. After sorting, the
  **              program prints the top 20 results to the command line along
  **              with performance data of the search operations.
- */
+ **/
 
 #include <iostream>
 #include <string>

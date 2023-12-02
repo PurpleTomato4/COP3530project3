@@ -103,11 +103,11 @@ void Sort<T>::MergeSort(vector<T>& data, int left, int right) {
     if (left < right) {
         int middle = (left + right) / 2;
 
-        //recursively split the vector in half until base case
+        // Recursively split the vector in half until base case
         MergeSort(data, left, middle);
         MergeSort(data, middle + 1, right);
 
-        //merge the split vectors together
+        // Merge the split vectors together
         merge(data, left, middle, right);
     }
 }
@@ -120,7 +120,7 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
     vector<T> leftArr(leftSize);
     vector<T> rightArr(rightSize);
 
-    //fill the right and left vectors with the corresponding data
+    // Fill the right and left vectors with the corresponding data
     for (int i = 0; i < leftSize; i++)
         leftArr[i] = data[left + i];
     for (int j = 0; j < rightSize; j++)
@@ -130,30 +130,26 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
     int j = 0;
     int k = left;
 
-    //compare data from left and right sub arrays and merge in the new sorted order
+    // Compare data from left and right sub arrays and merge in the new sorted order
     while (i < leftSize && j < rightSize) {
         if (_comp(leftArr[i], rightArr[j], _ascending)) {
             data[k] = rightArr[j];
             j++;
-            //data[k] = leftArr[i];
-            //i++;
         } else {
             data[k] = leftArr[i];
             i++;
-            //data[k] = rightArr[j];
-            //j++;
         }
         k++;
     }
 
-    //copy remaining elements from left array
+    // Copy remaining elements from left array
     while (i < leftSize) {
         data[k] = leftArr[i];
         i++;
         k++;
     }
 
-    //copy remaining elements from right array
+    // Copy remaining elements from right array
     while (j < rightSize) {
         data[k] = rightArr[j];
         j++;
