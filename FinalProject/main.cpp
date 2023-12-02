@@ -1,34 +1,52 @@
+/** COP3530 Project 3 - Airline Sorter 1000
+ ** University of Florida - Fall 2023
+ ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Wilson
+ ** Date: 12/07/2023
+ ** Description: This command line program imports T100-Domestic Segment data
+ **              from the USDOT Bureau of Transportation Statistics. A sample
+ **              dataset downloaded 10/27/2023 is used. The user is provided
+ **              with tools to analyze the data in three ways:
+ **                1) Sort the data by Air Carrier efficiency.
+ **                2) Sort the data by Route efficiency.
+ **                3) Sort the data by Route length.
+ **              There user is allowed to choose from a list of sorting
+ **              algorithms to use and specify sort order. After sorting, the
+ **              program prints the top 20 results to the command line along
+ **              with performance data of the search operations.
+ */
+
 #include <iostream>
-#include <fstream>
 #include <string>
-#include <sstream>
 #include <vector>
-#include <iomanip>
-#include <chrono> 
-#include <map>
-#include <functional>
 #include "Flights.h"
 #include "Sort.h"
-#include "constants.h"
 #include "FlightData.h"
 using namespace std;
 using namespace std::chrono;
 
 bool validateSelection(string userInput, int lowRange, int highRange);
-bool validateGap(string userInput, float lowRange, float highRange);
+steady_clock::time_point startTimer();
+int elapsedMillis(steady_clock::time_point start);
+int elapsedMicros(steady_clock::time_point start);
 
-int main()
-{
-    cout << "Loading flight database..." << endl << endl; 
+int main() {
 
+    cout << "Welcome to the Airline Sorter 1000." << endl << endl;
+
+    // Load the database
+    cout << "Loading flight database..." << endl;
+    string filename = "flightdata.csv";
     FlightData data;
-    data.LoadData("flightdata.csv");
+    auto timer = startTimer();
+    data.LoadData(filename);
+    int loadTime = elapsedMillis(timer);
+    cout << "Success! Loaded \"" << filename << "\" in " << loadTime
+         << " milliseconds." << endl << endl;
 
-    cout << "Welcome to the Airline Sorter 1000. What would you like to do?" << endl << endl;
-
+    // Get user input, process data, print results
     while (true) {
+        // Get analysis type
         int analysisType;
-        bool subMenu = true;
         while(true) {
             cout << "What would you like to sort?" << endl << endl;
             cout << "1. Air Carriers by Efficiency (Passengers/Available Seats)"
@@ -49,13 +67,14 @@ int main()
             }
         }
 
+        // Exit on "0"
         if (analysisType == 0) {
             cout << "Airline Sorter 1000 logging off. Goodbye." << endl;
             break;
         }
 
+        // Set sort comparison function
         Sort<Flights *> sorter;
-
         vector<Flights *> *source = nullptr;
         if (analysisType == 1) {
             source = &data._airCarrierData;
@@ -68,6 +87,7 @@ int main()
             sorter.SetSortFunction(Flights::DistanceComp);
         }
 
+        // Get sort type
         int sortOption;
         while(true) {
             cout << "How would you like to sort the data?" << endl << endl;
@@ -88,17 +108,18 @@ int main()
             }
         }
 
+        // Exit on "0"
         if (sortOption == 0) {
             cout << "Airline Sorter 1000 logging off. Goodbye." << endl;
             break;
         };
 
-
+        // Get sort direction
         int direction;
         while (true) {
             cout << "In what order would you like to sort?" << endl << endl;
-            cout << "1. Descending" << endl;
-            cout << "2. Ascending" << endl << endl;
+            cout << "1. Ascending" << endl;
+            cout << "2. Descending" << endl << endl;
             string input;
             cin >> input;
             cout << endl;
@@ -112,73 +133,62 @@ int main()
 
         bool ascending;
         if (direction == 1)
-            ascending = 0;
-        else
             ascending = 1;
+        else
+            ascending = 0;
 
         sorter.SetSortDirection(ascending);
 
-        duration<double> mergeTime;
-        duration<double> shellTime;
-        duration<double> quickTime;
-
+        // MergeSort
         if (sortOption == 1) {
-            auto start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.MergeSort(*source, 0, source->size() - 1);
-            auto stop = high_resolution_clock::now();
-            mergeTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-            << duration_cast<microseconds>(mergeTime).count()
-            << " microseconds using MergeSort" << endl << endl;
+            int sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
+                 << " microseconds using MergeSort" << endl << endl;
         }
+        // ShellSort
         else if (sortOption == 2) {
-            auto start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.ShellSort(*source);
-            auto stop = high_resolution_clock::now();
-            shellTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-                 << duration_cast<microseconds>(shellTime).count()
-                    << " microseconds" << endl << endl;
+            int sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
+                 << " microseconds using ShellSort" << endl << endl;
         }
+        // QuickSort
         else if (sortOption == 3) {
-            auto start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.QuickSort(*source, 0, source->size() - 1);
-            auto stop = high_resolution_clock::now();
-            quickTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-                 << duration_cast<microseconds>(quickTime).count()
+            int sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
                  << " microseconds using QuickSort" << endl << endl;
         }
+        // All three sorting algorithms
         else if (sortOption == 4) {
             // Create two copies of the data to be sorted
             vector<Flights*> shellCopy = *source;
             vector<Flights*> quickCopy = *source;
 
-            auto start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.MergeSort(*source, 0, source->size() - 1);
-            auto stop = high_resolution_clock::now();
-            mergeTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-                 << duration_cast<microseconds>(mergeTime).count()
+            int sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
                  << " microseconds using MergeSort" << endl;
 
-            start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.ShellSort(shellCopy);
-            stop = high_resolution_clock::now();
-            shellTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-                 << duration_cast<microseconds>(shellTime).count()
+            sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
                  << " microseconds using ShellSort" << endl;
 
-            start = high_resolution_clock::now();
+            timer = startTimer();
             sorter.QuickSort(quickCopy, 0, source->size() - 1);
-            stop = high_resolution_clock::now();
-            quickTime = stop - start;
-            cout << "Sorted " << source->size() << " elements in "
-                 << duration_cast<microseconds>(quickTime).count()
+            sortTime = elapsedMicros(timer);
+            cout << "Sorted " << source->size() << " elements in " << sortTime
                  << " microseconds using QuickSort" << endl << endl;
         }
 
+        // Print the results
         if (analysisType == 1)
             data.PrintCarrierTop20();
         else if (analysisType == 2)
@@ -190,6 +200,8 @@ int main()
     return 0; 
 }
 
+
+// Selection validation
 bool validateSelection(string userInput, int lowRange, int highRange) {
     if (!isdigit(userInput[0]))
         return false;
@@ -202,15 +214,17 @@ bool validateSelection(string userInput, int lowRange, int highRange) {
     return true;
 }
 
-bool validateGap(string userInput, float lowRange, float highRange) {
-    if (!isdigit(userInput[0]))
-        return false;
-    size_t position;
-    float value = stof(userInput, &position);
-    if (position != userInput.length())
-        return false;
-    if (value < lowRange || value > highRange)
-        return false;
-    return true;
+// Performance tracking
+steady_clock::time_point startTimer() {
+    return high_resolution_clock::now();
 }
 
+int elapsedMillis(steady_clock::time_point start) {
+    steady_clock::time_point stop = high_resolution_clock::now();
+    return duration_cast<milliseconds>(stop - start).count();
+}
+
+int elapsedMicros(steady_clock::time_point start) {
+    steady_clock::time_point stop = high_resolution_clock::now();
+    return duration_cast<microseconds>(stop - start).count();
+}

@@ -31,7 +31,7 @@ private:
 
     // Shell Sort Functions
 public:
-    void ShellSort(vector<T>& data, int placeholder = 0);
+    void ShellSort(vector<T>& data);
 
 };
 
@@ -163,7 +163,7 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
 
 /*** Shell Sort ***/
 template <typename T>
-void Sort<T>::ShellSort(vector<T>& data, int placeholder) {
+void Sort<T>::ShellSort(vector<T>& data) {
     int n = data.size();
     int gap = n / 2;
     while (gap > 0) {
