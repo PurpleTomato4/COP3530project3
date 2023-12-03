@@ -1,7 +1,7 @@
 /** COP3530 Project 3 - Airline Sorter 1000
  ** University of Florida - Fall 2023
- ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Wilson
- ** Date: 12/07/2023
+ ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Willson
+ ** Date: 12/05/2023
  ** Description: This command line program imports T100-Domestic Segment data
  **              from the USDOT Bureau of Transportation Statistics. A sample
  **              dataset downloaded 10/27/2023 is used. The user is provided
@@ -9,7 +9,7 @@
  **                1) Sort the data by Air Carrier efficiency.
  **                2) Sort the data by Route efficiency.
  **                3) Sort the data by Route length.
- **              There user is allowed to choose from a list of sorting
+ **              The user is allowed to choose from a list of sorting
  **              algorithms to use and specify sort order. After sorting, the
  **              program prints the top 20 results to the command line along
  **              with performance data of the search operations.
@@ -18,6 +18,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iomanip>
+#include <chrono>
 #include "Flights.h"
 #include "Sort.h"
 #include "FlightData.h"
@@ -94,7 +96,7 @@ int main() {
             cout << "1. Sort using MergeSort" << endl;
             cout << "2. Sort using ShellSort" << endl;
             cout << "3. Sort using QuickSort" << endl;
-            cout << "4. Compare All Sorting Algorithms" << endl;
+            cout << "4. Compare all sorting algorithms" << endl;
             cout << "0. Exit" << endl << endl;
 
             string input;
