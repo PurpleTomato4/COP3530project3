@@ -66,7 +66,20 @@ void Sort<T>::QuickSort(vector<T>& data, int low, int high) {
 
 template <typename T>
 int Sort<T>::partition(vector<T>& data, int low, int high) {
-    T pivot = data[low];
+    int mid = low + (high - low) / 2;
+    T piv1 = data[low];
+    T piv2 = data[mid];
+    T piv3 = data[high];
+    T pivot; 
+    if ((piv1 >= piv2 && piv1 <= piv3) || (piv1 <= piv2 && piv1 >= piv3)) {
+        pivot = piv1;
+    }
+    else if ((piv2 >= piv1 && piv2 <= piv3) || (piv2 <= piv1 && piv2 >= piv3)) {
+        pivot = piv2;
+    }
+    else {
+        pivot = piv3;
+    }
     int up = low;
     int down = high;
 
