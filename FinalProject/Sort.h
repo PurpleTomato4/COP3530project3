@@ -1,3 +1,12 @@
+/** COP3530 Project 3 - Airline Sorter 1000
+ ** University of Florida - Fall 2023
+ ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Wilson
+ ** Date: 12/07/2023
+ ** Atributions: QuickSort Hoare's partition function inspired by
+ **              https://www.geeksforgeeks.org/hoares-vs-lomuto
+ **              -partition-scheme-quicksort/
+ **/
+
 #pragma once
 #include <string>
 #include <vector>
@@ -58,49 +67,35 @@ void Sort<T>::SetSortDirection(bool asc) {
 template <typename T>
 void Sort<T>::QuickSort(vector<T>& data, int low, int high) {
     if (low < high) {
-        int pivot = partition(data, low, high);
-        QuickSort(data, low, pivot - 1);
-        QuickSort(data, pivot + 1, high);
+        int pivotIndex = partition(data, low, high);
+        QuickSort(data, low, pivotIndex);
+        QuickSort(data, pivotIndex + 1, high);
     }
 }
 
 template <typename T>
 int Sort<T>::partition(vector<T>& data, int low, int high) {
-    int mid = low + (high - low) / 2;
-    T piv1 = data[low];
-    T piv2 = data[mid];
-    T piv3 = data[high];
-    T pivot; 
-    if ((piv1 >= piv2 && piv1 <= piv3) || (piv1 <= piv2 && piv1 >= piv3)) {
-        pivot = piv1;
-    }
-    else if ((piv2 >= piv1 && piv2 <= piv3) || (piv2 <= piv1 && piv2 >= piv3)) {
-        pivot = piv2;
-    }
-    else {
-        pivot = piv3;
-    }
-    int up = low;
-    int down = high;
+    T pivot = data[low + (high - low) / 2];
+    int i = low;
+    int j = high;
 
-    while (up < down) {
-        for (int j = up; j < high; j++) {
-            if (_comp(data[up], pivot, _ascending)) {
-                break;
-            }
-            up++;
+    while (i < j) {
+        // Scan from the left, find the first element greater than the pivot
+        while (_comp(pivot, data[i], _ascending)) {
+            i++;
         }
-        for (int j = high; j > low; j--) {
-            if (!_comp(data[down], pivot, _ascending)) {
-                break;
-            }
-            down--;
+        // Scan from the right, find the first element less than the pivot
+        while (_comp(pivot, data[j], !_ascending)) {
+            j--;
         }
-        if (up < down)
-            swap(data, up, down);
+        // Swap the elements if they're on the wrong side of the pivot
+        if (i < j) {
+            swap(data, i, j);
+            i++;
+            j--;
+        }
     }
-    swap(data, low, down);
-    return down;
+    return j;
 }
 
 template <typename T>
@@ -143,7 +138,8 @@ void Sort<T>::merge(vector<T> &data, int left, int middle, int right) {
     int j = 0;
     int k = left;
 
-    // Compare data from left and right sub arrays and merge in the new sorted order
+    // Compare data from left and right sub arrays and merge in the new sorted
+    // order
     while (i < leftSize && j < rightSize) {
         if (_comp(leftArr[i], rightArr[j], _ascending)) {
             data[k] = rightArr[j];
@@ -188,4 +184,3 @@ void Sort<T>::ShellSort(vector<T>& data) {
         gap /= 2.2;
     }
 }
-

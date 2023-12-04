@@ -158,7 +158,8 @@ void FlightData::GetCarrierData() {
     // Iterate through the data set and insert into the temporary map data
     // structure as needed
     for (auto i : _flightData) {
-        Flights* copy = new Flights(i->_carrier, "", "", i->_seats, i->_passengers, 0);
+        Flights* copy = new Flights(i->_carrier, "", "", i->_seats,
+                                    i->_passengers, 0);
         if (carrierMap.find(copy->_carrier) == carrierMap.end()) {
             carrierMap[copy->_carrier] = copy;
         }
@@ -187,7 +188,8 @@ void FlightData::GetCityPairs() {
     // structure as needed
     for (auto i : _flightData) {
         string cityPair = i->_origin + " " + i->_destination;
-        Flights* copy = new Flights("", i->_origin, i->_destination, i->_seats, i->_passengers, i->_distance);
+        Flights* copy = new Flights("", i->_origin, i->_destination, i->_seats,
+                                    i->_passengers, i->_distance);
         if (pairsMap.find(cityPair) == pairsMap.end()) {
             pairsMap[cityPair] = copy;
         }
