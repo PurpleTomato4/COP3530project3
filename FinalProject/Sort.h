@@ -5,6 +5,8 @@
  ** Atributions: QuickSort Hoare's partition function inspired by
  **              https://www.geeksforgeeks.org/hoares-vs-lomuto
  **              -partition-scheme-quicksort/
+ **              ShellSort inspired by https://www.geeksforgeeks.org/shellsort/
+ **              Other functions based on COP3530 lecture notes
  **/
 
 #pragma once

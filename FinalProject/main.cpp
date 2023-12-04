@@ -75,6 +75,28 @@ int main() {
             break;
         }
 
+        bool fullDetail = false;
+        if (analysisType == 1) {
+            while(true) {
+                cout << "Which report would you like to run?" << endl << endl;
+                cout << "1. Summary (Top 20 Results)"
+                     << endl;
+                cout << "2. Full Report"
+                     << endl << endl;
+
+                string input;
+                cin >> input;
+                cout << endl;
+                if (!validateSelection(input, 0, 2))
+                    cout << "Invalid selection. Please try again." << endl << endl;
+                else {
+                    if (input == "2")
+                        fullDetail = true;
+                    break;
+                }
+            }
+        }
+
         // Set sort comparison function
         Sort<Flights *> sorter;
         vector<Flights *> *source = nullptr;
@@ -191,8 +213,9 @@ int main() {
         }
 
         // Print the results
-        if (analysisType == 1)
-            data.PrintCarrierTop20();
+        if (analysisType == 1) {
+            data.PrintCarrierTop20(fullDetail);
+        }
         else if (analysisType == 2)
             data.PrintCityPairTop20();
         else if (analysisType == 3)

@@ -21,7 +21,7 @@ public:
 
     ~FlightData();
     void LoadData(string filename);
-    void PrintCarrierTop20();
+    void PrintCarrierTop20(bool detail);
     void PrintCityPairTop20();
     void PrintDistanceTop20();
 

@@ -61,6 +61,14 @@ void FlightData::LoadData(string filename) {
 
             getline(stream, carrier, ',');
 
+            if (carrier.front() == '"') {
+                carrier = carrier.substr(1);
+                string temp;
+                getline(stream, temp, '"');
+                carrier += ",";
+                carrier += temp;
+            }
+
             for (int i = 0; i < 9; i ++)
                 getline(stream, token, ',');
 
@@ -87,16 +95,19 @@ void FlightData::LoadData(string filename) {
 }
 
 // Data Print Functions
-void FlightData::PrintCarrierTop20() {
+void FlightData::PrintCarrierTop20(bool detail) {
+    int printLines = 20;
+    if (detail)
+        printLines = _airCarrierData.size();
     // Minimum field widths
     int field_one_width = 10;
     // Iterate through the first 20 data elements, update the first field width
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < printLines; i++) {
         if (_airCarrierData[i]->_carrier.length() > field_one_width)
             field_one_width = _airCarrierData[i]->_carrier.length();
     }
     // Print the first 20 data elements
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < printLines; i++) {
         cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
              setw(field_one_width) << left << _airCarrierData[i]->_carrier
              << " | Efficiency: " << fixed << setprecision(3)
@@ -130,10 +141,13 @@ void FlightData::PrintCityPairTop20() {
 
 void FlightData::PrintDistanceTop20() {
     // Default field widths
+    int field_zero_width = 10;
     int field_one_width = 10;
     int field_two_width = 10;
     // Iterate through the first 20 elements. Resize widths as needed
     for (int i = 0; i < 20; i++) {
+        if (_flightData[i]->_carrier.length() > field_zero_width)
+            field_zero_width = _flightData[i]->_carrier.length();
         if (_flightData[i]->_origin.length() > field_one_width)
             field_one_width = _flightData[i]->_origin.length();
         if (_flightData[i]->_destination.length() > field_two_width)
@@ -141,11 +155,12 @@ void FlightData::PrintDistanceTop20() {
     }
     // Print the first 20 elements
     for (int i = 0; i < 20; i++) {
-        cout << setw(2) << left << i + 1 << ". " << "Origin: " <<
-             setw(field_one_width) << left << _flightData[i]->_origin <<
-             "  Destination: " << setw(field_two_width) << left <<
-             _flightData[i]->_destination <<
-             "| Distance: " << _flightData[i]->_distance << endl;
+        cout << setw(2) << right << i + 1 << ". " << "Airline: " <<
+             setw(field_zero_width) << left << _flightData[i]->_carrier
+             << "  Origin: " << setw(field_one_width) << left
+             << _flightData[i]->_origin << "  Destination: "
+             << setw(field_two_width) << left << _flightData[i]->_destination
+             << "| Distance: " << _flightData[i]->_distance << endl;
     }
     cout << endl;
 }
