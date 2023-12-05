@@ -160,7 +160,7 @@ void FlightData::PrintDistanceTop20() {
              << "  Origin: " << setw(field_one_width) << left
              << _flightData[i]->_origin << "  Destination: "
              << setw(field_two_width) << left << _flightData[i]->_destination
-             << "| Distance: " << _flightData[i]->_distance << endl;
+             << " | Distance: " << _flightData[i]->_distance << endl;
     }
     cout << endl;
 }
