@@ -9,4 +9,4 @@ add_executable(COP3530project3
         FinalProject/Flights.cpp
         FinalProject/Sort.h
         #FinalProject/test-unit/test.cpp
-        )
+        FinalProject/FlightData.cpp FinalProject/FlightData.h)

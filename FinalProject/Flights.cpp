@@ -1,33 +1,32 @@
+/** COP3530 Project 3 - Airline Sorter 1000
+ ** University of Florida - Fall 2023
+ ** Authors: Jack Goldstein, Benjamin Uppgard, Ryan Willson
+ ** Date: 12/05/2023
+ **/
 
 #include "Flights.h"
 
 Flights::Flights() {}
 
-Flights::Flights(float _seats, float _passengers, string _name, float _distance)
-{
-    seats = _seats;
-    passengers = _passengers;
-    efficiency = _passengers / _seats;
-    name = _name;
-    distance = _distance;
-
-    if (_seats == 0)
-    {
-        efficiency = 0;
-    }
+Flights::Flights(string carrier, string origin, string destination, int seats,
+                 int passengers, int distance) : _carrier(carrier),
+                 _origin(origin), _destination(destination), _seats(seats),
+                 _passengers(passengers), _distance(distance) {
+    _efficiency = static_cast<float>(_passengers) / _seats;
 }
 
-void Flights::Increment(float _seats, float _passengers, float _distance)
-{
-    seats += _seats;
-    passengers += _passengers;
-    distance += _distance;
-    efficiency = passengers / seats;
-    if (_seats == 0) {
-        efficiency = 0;
-    }
+// Comparison function for efficiency
+bool Flights::EfficiencyComp(Flights *a, Flights *b, bool ascending) {
+    if (ascending)
+        return a->_efficiency > b->_efficiency;
+    else
+        return a->_efficiency < b->_efficiency;
 }
 
-bool Flights::EfficiencyCompGT(Flights *a, Flights *b) {
-    return a->efficiency < b->efficiency;
+// Comparison function for distance
+bool Flights::DistanceComp(Flights *a, Flights *b, bool ascending) {
+    if (ascending)
+        return a->_distance > b->_distance;
+    else
+        return a->_distance < b->_distance;
 }
